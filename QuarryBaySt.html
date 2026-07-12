@@ -198,19 +198,20 @@
         .mtr-marquee { width: 100%; color: var(--warning-red); font-size: 0.85rem; font-weight: bold; }
 
         /* 巴士 */
-        .bus-section { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .bus-grid { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 4px; overflow-y: auto; align-content: flex-start; padding-right: 5px; }
-        .bus-grid::-webkit-scrollbar { width: 4px; }
-        .bus-grid::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+        .bus-section { flex: 1; display: flex; flex-direction: column; overflow: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
+        .bus-grid { display: flex; flex-direction: column; gap: 6px; padding-right: 5px; }
 
-        .bus-card { aspect-ratio: 1 / 1; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; }
+        .bus-card { border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; }
         .bus-card.kmb { background: var(--kmb-bg); border: 1px solid var(--kmb-border); }
         .bus-card.ctb { background: var(--ctb-bg); border: 1px solid var(--ctb-border); }
         
-        .bus-no { font-size: 1.5rem; font-weight: 900; line-height: 1; }
-        .bus-dest { font-size: 0.75rem; color: #aaa; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-top: 2px; }
-        .bus-eta { font-size: 0.95rem; font-weight: bold; text-align: right; font-variant-numeric: tabular-nums; width: 100%; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 4px; }
+        .bus-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .bus-no { font-size: 2.2rem; font-weight: 900; line-height: 1; min-width: 50px; text-align: center; }
+        .bus-dest { font-size: 1rem; color: #ccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bus-eta { font-size: 1.3rem; font-weight: bold; text-align: right; font-variant-numeric: tabular-nums; min-width: 90px; font-variant-numeric: tabular-nums; }
+        .bus-card.kmb .bus-no { color: #ff5252; }
         .bus-card.kmb .bus-eta { color: #ff5252; }
+        .bus-card.ctb .bus-no { color: #ffcc00; }
         .bus-card.ctb .bus-eta { color: #ffcc00; }
 
         @keyframes textBlink { 0% { opacity: 0.4; color: #ff3b30; } 50% { opacity: 1; color: #ff3b30; } 100% { opacity: 0.4; color: #ff3b30; } }
@@ -241,7 +242,7 @@
             .main-content { grid-template-columns: 1fr; overflow-y: auto; padding: 10px; gap: 15px; }
             .left-col, .right-col { height: auto; overflow: visible; gap: 15px; }
             .panel { margin-bottom: 0; padding: 15px; }
-            .bus-section { min-height: 400px; }
+            .bus-section { min-height: 200px; }
             .bus-grid { overflow-y: visible; }
             .weather-section { min-height: 350px; }
         }
@@ -445,7 +446,10 @@
                     const pulseClass = etaInfo.isArriving ? `arriving-pulse ${b.co}` : '';
                     busHtml += `
                         <div class="bus-card ${b.co} ${pulseClass}">
-                            <div><div class="bus-no">${b.no}</div><div class="bus-dest">${b.dest}</div></div>
+                            <div class="bus-left">
+                                <div class="bus-no">${b.no}</div>
+                                <div class="bus-dest">${b.dest}</div>
+                            </div>
                             <div class="bus-eta ${etaInfo.isArriving ? 'arriving-text' : ''}">${etaInfo.text}</div>
                         </div>`;
                 });
