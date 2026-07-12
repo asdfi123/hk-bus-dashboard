@@ -39,8 +39,8 @@
         .main-content {
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            padding: 12px;
+            gap: 8px;
+            padding: 8px;
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
@@ -49,8 +49,8 @@
         .panel {
             background: var(--panel-bg);
             border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            padding: 12px;
+            border-radius: 10px;
+            padding: 10px;
         }
 
         .left-col { display: flex; flex-direction: row; gap: 12px; }
@@ -176,7 +176,7 @@
 
         /* 港鐵 */
         .mtr-section { flex: 0 0 auto; }
-        .mtr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
+        .mtr-grid { display: flex; flex-direction: column; gap: 8px; }
         .station-card { border-radius: 12px; padding: 15px; }
         .qub-isl-style { background: #001f11; border: 1px solid #006432; box-shadow: inset 0 0 5px rgba(0, 100, 50, 0.3); }
         .qub-tkl-style { background: #1f0b2a; border: 1px solid #7935ab; box-shadow: inset 0 0 5px rgba(121, 53, 171, 0.3); }
