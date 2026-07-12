@@ -6,7 +6,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <title>HK Dashboard - Quarry Bay Street</title>
+    <title>旺角奶路臣街 巴士到站時間</title>
     <style>
         :root {
             --bg-color: #000000;
@@ -257,7 +257,7 @@
                     <div class="holiday-badge" id="holiday-badge" style="display: none;"></div>
                 </div>
                 <div class="time-container">
-                    <div class="location-label">Hong Kong 香港</div>
+                    <div class="location-label">Mong Kok 旺角</div>
                     <div class="time-row">
                         <div class="time-display" id="hk-time">--:--</div>
                         <div class="utc-display" id="utc-time">--:-- UTC</div>
@@ -302,15 +302,15 @@
                 <h2>🚆 地鐵即時班次</h2>
                 <div class="mtr-grid">
                     <div class="station-card qub-isl-style">
-                        <div class="station-name">鰂魚涌 <span class="line-badge badge-isl">港島綫 ISL</span></div>
+                        <div class="station-name">旺角 <span class="line-badge badge-isl">荃灣綫 TWL</span></div>
                         <div id="mtr-qub-isl-data"></div>
                     </div>
                     <div class="station-card qub-tkl-style">
-                        <div class="station-name">鰂魚涌 <span class="line-badge badge-tkl">將軍澳綫 TKL</span></div>
+                        <div class="station-name">旺角 <span class="line-badge badge-tkl">觀塘綫 KTL</span></div>
                         <div id="mtr-qub-tkl-data"></div>
                     </div>
                     <div class="station-card tak-isl-style">
-                        <div class="station-name">太古站 <span class="line-badge badge-isl">港島綫 ISL</span></div>
+                        <div class="station-name">油麻地 <span class="line-badge badge-isl">荃灣綫 TWL</span></div>
                         <div id="mtr-tak-isl-data"></div>
                     </div>
                 </div>
@@ -318,7 +318,7 @@
 
             <div class="panel bus-section">
                 <h2>
-                    <span>🚌 鰂魚涌街巴士站</span>
+                    <span>🚌 旺角奶路臣街 往尖沙咀碼頭</span>
                     <span class="refresh-indicator" id="refresh-status">🔄 系統啟動中...</span>
                 </h2>
                 <div class="bus-grid" id="bus-data"></div>
@@ -334,11 +334,11 @@
         let transportTimestamps = { mtr_qub_isl: [], mtr_qub_tkl: [], mtr_tak_isl: [], bus: [] };
         let hkHolidaysMap = {}; 
         
-        const ALLOWED_ROUTES = ['2', '2A', '8H', '18X', '19P', '33X', '77', '77A', '81', '81A', '82', '85', '85A', '99', '302A', '307P', '678', '722', 'A12', 'N8X', 'NA12'];
+        const ALLOWED_ROUTES = ['1', '1A', '2', '6'];
         const CTB_API_BASE = 'https://rt.data.gov.hk/v1/transport/citybus-nwfb';
         
         let ctbTargetStops = [];
-        const KMB_TARGET_STOP = 'KI04W10800000';
+        const KMB_TARGET_STOP = '6AB438AD3AE100DD';
 
         const MTR_DEST_MAP = {
             'KET': '堅尼地城', 'CHW': '柴灣', 'POA': '寶琳', 'LHP': '康城',
@@ -437,7 +437,7 @@
                 if (statusText.includes('🔄') || statusText.includes('安全')) {
                     busHtml = `<div class="no-service">⏳ 系統正擷取數據...<br><span style="font-size:0.8rem; color:#666;">預計需時幾秒，請耐心等候</span></div>`;
                 } else {
-                    busHtml = `<div class="no-service">💤 指定路線目前無即時班次<br><br><span style="font-size:0.8rem; color:#444;">[已連線 九巴:${KMB_TARGET_STOP} | 城巴:${ctbTargetStops[0]||'無'}]</span></div>`;
+                    busHtml = `<div class="no-service">💤 指定路線目前無即時班次<br><br><span style="font-size:0.8rem; color:#444;">[已連線 九巴:${KMB_TARGET_STOP}]</span></div>`;
                 }
             } else {
                 transportTimestamps.bus.forEach(b => {
@@ -453,60 +453,29 @@
             document.getElementById('bus-data').innerHTML = busHtml;
         }
 
-        async function discoverExactStops() {
-            const cached = JSON.parse(localStorage.getItem('qb_westbound_stop_v18') || '{}');
-            if (cached.ctb && cached.ctb.length > 0) { ctbTargetStops = cached.ctb; return; }
-
-            document.getElementById('refresh-status').className = 'refresh-indicator loading';
-            document.getElementById('refresh-status').innerText = '🔄 定位城巴站...';
-            
-            try {
-                const ctbRes = await fetch(`${CTB_API_BASE}/route-stop/CTB/2/outbound`);
-                const ctbJson = await ctbRes.json();
-                if (ctbJson && ctbJson.data) {
-                    for (let i = 0; i < ctbJson.data.length; i++) {
-                        const stopId = ctbJson.data[i].stop;
-                        const stopRes = await fetch(`${CTB_API_BASE}/stop/${stopId}`);
-                        const stopData = await stopRes.json();
-                        if (stopData?.data?.name_tc.includes('鰂魚涌街') && stopData?.data?.name_tc.includes('英皇道')) {
-                            ctbTargetStops = [stopId]; break; 
-                        }
-                    }
-                }
-            } catch (e) {}
-
-            if (ctbTargetStops.length === 0) ctbTargetStops = ['001272']; 
-            localStorage.setItem('qb_westbound_stop_v18', JSON.stringify({ ctb: ctbTargetStops }));
-        }
+        async function discoverExactStops() { /* 全九巴路線，無需城巴 */ }
 
         async function fetchRealBusData() {
-            if (ctbTargetStops.length === 0) await discoverExactStops();
             document.getElementById('refresh-status').innerText = '🔄 讀取班次...';
             
             let rawBusData = [];
             const now = new Date();
-            let promises = [];
 
-            ctbTargetStops.forEach(stop => {
-                ALLOWED_ROUTES.forEach(route => {
-                    promises.push(fetch(`${CTB_API_BASE}/eta/CTB/${stop}/${route}`).then(r => r.json()).then(json => {
-                        if (json?.data) json.data.forEach(d => { if (d.eta && new Date(d.eta) > now) rawBusData.push({ no: d.route, dest: d.dest_tc, time: d.eta, co: 'ctb' }); });
-                    }).catch(()=>{}));
+            try {
+                const res = await fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${KMB_TARGET_STOP}`);
+                const json = await res.json();
+                if (json?.data) json.data.forEach(d => { 
+                    if (d.eta && new Date(d.eta) > now && ALLOWED_ROUTES.includes(d.route)) 
+                        rawBusData.push({ no: d.route, dest: d.dest_tc, time: d.eta, co: 'kmb' }); 
                 });
-            });
-
-            promises.push(fetch(`https://data.etabus.gov.hk/v1/transport/kmb/stop-eta/${KMB_TARGET_STOP}`).then(r => r.json()).then(json => {
-                if (json?.data) json.data.forEach(d => { if (d.eta && new Date(d.eta) > now && ALLOWED_ROUTES.includes(d.route)) rawBusData.push({ no: d.route, dest: d.dest_tc, time: d.eta, co: 'kmb' }); });
-            }).catch(()=>{}));
-
-            await Promise.allSettled(promises);
+            } catch(e) {}
 
             let uniqueBuses = {};
             rawBusData.forEach(b => { if (!uniqueBuses[b.no] || new Date(b.time) < new Date(uniqueBuses[b.no].time)) uniqueBuses[b.no] = b; });
             
             transportTimestamps.bus = Object.values(uniqueBuses).sort((a, b) => new Date(a.time) - new Date(b.time));
             document.getElementById('refresh-status').className = 'refresh-indicator';
-            document.getElementById('refresh-status').innerText = `🟢 60秒更新 | 城巴(${ctbTargetStops[0]}) 九巴(${KMB_TARGET_STOP})`;
+            document.getElementById('refresh-status').innerText = `🟢 60秒更新 | 九巴 ${KMB_TARGET_STOP}`;
             renderUI();
         }
 
@@ -644,14 +613,14 @@
 
         async function fetchMTR() {
             try {
-                const [resIslQ, resTklQ, resIslT] = await Promise.all([
-                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=QUB`).then(r=>r.json()),
-                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TKL&sta=QUB`).then(r=>r.json()),
-                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=ISL&sta=TAK`).then(r=>r.json())
+                const [resTwlM, resKtlM, resTwlY] = await Promise.all([
+                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TWL&sta=MOK`).then(r=>r.json()),
+                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=KTL&sta=MOK`).then(r=>r.json()),
+                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TWL&sta=YMT`).then(r=>r.json())
                 ]);
-                transportTimestamps.mtr_qub_isl = setupMtrData(resIslQ, 'ISL-QUB', { up: '柴灣', down: '堅尼地城' });
-                transportTimestamps.mtr_qub_tkl = setupMtrData(resTklQ, 'TKL-QUB', { up: '寶琳/康城', down: '北角' });
-                transportTimestamps.mtr_tak_isl = setupMtrData(resIslT, 'ISL-TAK', { up: '柴灣', down: '堅尼地城' });
+                transportTimestamps.mtr_qub_isl = setupMtrData(resTwlM, 'TWL-MOK', { up: '荃灣', down: '中環' });
+                transportTimestamps.mtr_qub_tkl = setupMtrData(resKtlM, 'KTL-MOK', { up: '調景嶺', down: '黃埔' });
+                transportTimestamps.mtr_tak_isl = setupMtrData(resTwlY, 'TWL-YMT', { up: '荃灣', down: '中環' });
             } catch (e) {}
         }
 
