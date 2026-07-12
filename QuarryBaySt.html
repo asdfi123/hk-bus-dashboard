@@ -208,7 +208,7 @@
         .bus-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
         .bus-no { font-size: 2.2rem; font-weight: 900; line-height: 1; min-width: 50px; text-align: center; }
         .bus-dest { font-size: 1rem; color: #ccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .bus-eta { font-size: 1.3rem; font-weight: bold; text-align: right; font-variant-numeric: tabular-nums; min-width: 90px; font-variant-numeric: tabular-nums; }
+        .bus-eta { font-size: 0.95rem; font-weight: bold; text-align: right; min-width: 60px; white-space: nowrap; }
         .bus-card.kmb .bus-no { color: #ff5252; }
         .bus-card.kmb .bus-eta { color: #ff5252; }
         .bus-card.ctb .bus-no { color: #ffcc00; }
@@ -440,15 +440,16 @@
                 }
             } else {
                 transportTimestamps.bus.forEach(b => {
-                    const etaInfo = parseRemaining(b.time);
+                    const etaInfo = parseRemaining(b.etas[0].time);
                     const pulseClass = etaInfo.isArriving ? `arriving-pulse ${b.co}` : '';
+                    let etaList = b.etas.map(e => parseRemaining(e.time).text).join('｜');
                     busHtml += `
                         <div class="bus-card ${b.co} ${pulseClass}">
                             <div class="bus-left">
                                 <div class="bus-no">${b.no}</div>
                                 <div class="bus-dest">${b.dest}</div>
                             </div>
-                            <div class="bus-eta ${etaInfo.isArriving ? 'arriving-text' : ''}">${etaInfo.text}</div>
+                            <div class="bus-eta ${etaInfo.isArriving ? 'arriving-text' : ''}">${etaList}</div>
                         </div>`;
                 });
             }
@@ -472,10 +473,15 @@
                 });
             } catch(e) {}
 
-            let uniqueBuses = {};
-            rawBusData.forEach(b => { if (!uniqueBuses[b.no] || new Date(b.time) < new Date(uniqueBuses[b.no].time)) uniqueBuses[b.no] = b; });
+            // Group ALL ETAs by route, sorted by time
+            let busesByRoute = {};
+            rawBusData.forEach(b => {
+                if (!busesByRoute[b.no]) busesByRoute[b.no] = [];
+                busesByRoute[b.no].push(b);
+            });
+            Object.values(busesByRoute).forEach(arr => arr.sort((a, b) => new Date(a.time) - new Date(b.time)));
             
-            transportTimestamps.bus = Object.values(uniqueBuses).sort((a, b) => new Date(a.time) - new Date(b.time));
+            transportTimestamps.bus = Object.entries(busesByRoute).map(([no, etas]) => ({ no, dest: etas[0].dest, co: etas[0].co, etas })).sort((a, b) => new Date(a.etas[0].time) - new Date(b.etas[0].time));
             document.getElementById('refresh-status').className = 'refresh-indicator';
             document.getElementById('refresh-status').innerText = `🟢 60秒更新`;
             renderUI();
