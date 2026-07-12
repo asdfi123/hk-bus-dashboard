@@ -30,7 +30,7 @@ h2{font-size:1rem;color:#888;margin:12px 0 8px;padding-bottom:4px;border-bottom:
 .bus-card .no{font-size:2rem;font-weight:900;color:#ff5252;min-width:45px;text-align:center}
 .bus-card .info{flex:1;margin-left:10px;min-width:0}
 .bus-card .dest{font-size:.9rem;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.bus-card .etas{font-size:.75rem;color:#ff5252;margin-top:2px}
+.bus-card .etas{font-size:1rem;color:#ff5252;margin-top:2px}
 
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .header .clock{font-size:2.5rem;font-weight:700;font-variant-numeric:tabular-nums}
@@ -158,7 +158,7 @@ async function fetchBus(){
 function tick(){
   const now=new Date();
   const days=['禮拜日','禮拜一','禮拜二','禮拜三','禮拜四','禮拜五','禮拜六'];
-  document.getElementById('clock').innerText=now.toLocaleTimeString('en-US',{timeZone:'Asia/Hong_Kong',hour12:false,hour:'2-digit',minute:'2-digit'});
+  document.getElementById('clock').innerText=now.toLocaleTimeString('en-US',{timeZone:'Asia/Hong_Kong',hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
   document.getElementById('date-display').innerText=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${days[now.getDay()]}`;
 }
 tick();setInterval(tick,1000);
