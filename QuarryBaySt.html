@@ -32,13 +32,24 @@ h2{font-size:1rem;color:#888;margin:12px 0 8px;padding-bottom:4px;border-bottom:
 .bus-card .dest{font-size:.9rem;color:#ccc;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bus-card .etas{font-size:.75rem;color:#ff5252;margin-top:2px}
 
-.refresh{font-size:.7rem;color:#0f0;text-align:right}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.header .clock{font-size:2.5rem;font-weight:700;font-variant-numeric:tabular-nums}
+.header .date{font-size:.85rem;color:#aaa;line-height:1.4}
+.header .temp{font-size:1.5rem;font-weight:700;color:#4da6ff}
 .loading{color:#ff0!important}
 .no-data{text-align:center;color:#555;padding:20px}
 .warn-active{background:rgba(255,77,77,.1);border:1px solid rgba(255,77,77,.4);border-radius:8px;padding:8px;font-size:.8rem;margin:6px 0;text-align:center}
 </style>
 </head>
 <body>
+
+<div class="header">
+<div>
+<div class="clock" id="clock">--:--</div>
+<div class="date" id="date-display">--</div>
+</div>
+<div class="temp" id="now-temp">--°C</div>
+</div>
 
 <div class="weather-row" id="weather-cards"></div>
 <div id="warn-box"></div>
@@ -58,7 +69,10 @@ async function fetchWeather(){
   try{
     const r=await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=tc');
     const d=await r.json();
-    let h='';
+    // current temp
+    const tst=d.temperature.data.find(x=>x.place==='香港天文台');
+    if(tst) document.getElementById('now-temp').innerText=tst.value+'°C';
+
     // forecast
     const f=await fetch('https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc');
     const fd=await f.json();
@@ -140,6 +154,14 @@ async function fetchBus(){
     document.getElementById('bus-status').innerText='🟢';
   }catch(e){document.getElementById('bus-status').innerText='❌';}
 }
+
+function tick(){
+  const now=new Date();
+  const days=['禮拜日','禮拜一','禮拜二','禮拜三','禮拜四','禮拜五','禮拜六'];
+  document.getElementById('clock').innerText=now.toLocaleTimeString('en-US',{timeZone:'Asia/Hong_Kong',hour12:false,hour:'2-digit',minute:'2-digit'});
+  document.getElementById('date-display').innerText=`${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${days[now.getDay()]}`;
+}
+tick();setInterval(tick,1000);
 
 fetchWeather();fetchMTR();fetchBus();
 setInterval(fetchMTR,15000);setInterval(fetchBus,30000);setInterval(fetchWeather,600000);
