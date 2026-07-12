@@ -199,7 +199,7 @@
 
         /* 巴士 */
         .bus-section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
-        .bus-grid { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 6px; padding-right: 5px; }
+        .bus-grid { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 6px; padding: 5px 5px 60px 0; }
 
         .bus-card { border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; }
         .bus-card.kmb { background: var(--kmb-bg); border: 1px solid var(--kmb-border); }
@@ -319,6 +319,7 @@
                     <span class="refresh-indicator" id="refresh-status">🔄 系統啟動中...</span>
                 </h2>
                 <div class="bus-grid" id="bus-data"></div>
+                <div style="height:40px; flex-shrink:0;"></div>
             </div>
         </div>
     </div>
