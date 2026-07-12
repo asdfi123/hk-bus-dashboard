@@ -1,0 +1,17 @@
+{
+  "name": "HK Bus Dashboard",
+  "short_name": "Bus ETA",
+  "description": "香港巴士到站時間 + 天氣 + 地鐵",
+  "start_url": "/0Data/BusStop/HKI/Eastern/QuarryBaySt.html",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚌</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
