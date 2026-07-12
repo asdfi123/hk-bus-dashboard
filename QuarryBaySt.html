@@ -171,9 +171,9 @@
         .psr-low { color: #4da6ff; }
 
         /* --- 右側佈局 --- */
-        .right-col { display: flex; flex-direction: column; gap: 20px; height: 100%; overflow: hidden; }
+        .right-col { display: flex; flex-direction: column; gap: 12px; height: 100%; min-height: 0; }
         
-        h2 { margin: 0 0 15px 0; font-size: 1.1rem; color: var(--text-muted); border-bottom: 1px solid var(--panel-border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        h2 { margin: 0 0 10px 0; font-size: 1rem; color: var(--text-muted); border-bottom: 1px solid var(--panel-border); padding-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .refresh-indicator { font-size: 0.75rem; color: #00ff66; font-weight: normal; }
         .refresh-indicator.loading { color: #ffcc00; }
 
@@ -198,8 +198,8 @@
         .mtr-marquee { width: 100%; color: var(--warning-red); font-size: 0.85rem; font-weight: bold; }
 
         /* 巴士 */
-        .bus-section { flex: 1; display: flex; flex-direction: column; overflow: auto; -webkit-overflow-scrolling: touch; min-height: 0; }
-        .bus-grid { display: flex; flex-direction: column; gap: 6px; padding-right: 5px; }
+        .bus-section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+        .bus-grid { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; gap: 6px; padding-right: 5px; }
 
         .bus-card { border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; gap: 12px; }
         .bus-card.kmb { background: var(--kmb-bg); border: 1px solid var(--kmb-border); }
