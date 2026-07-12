@@ -303,16 +303,12 @@
                 <h2>🚆 地鐵即時班次</h2>
                 <div class="mtr-grid">
                     <div class="station-card qub-isl-style">
-                        <div class="station-name">旺角 <span class="line-badge badge-isl">荃灣綫 TWL</span></div>
+                        <div class="station-name">旺角 <span class="line-badge badge-isl">荃灣綫</span></div>
                         <div id="mtr-qub-isl-data"></div>
                     </div>
                     <div class="station-card qub-tkl-style">
-                        <div class="station-name">旺角 <span class="line-badge badge-tkl">觀塘綫 KTL</span></div>
+                        <div class="station-name">旺角 <span class="line-badge badge-tkl">觀塘綫</span></div>
                         <div id="mtr-qub-tkl-data"></div>
-                    </div>
-                    <div class="station-card tak-isl-style">
-                        <div class="station-name">油麻地 <span class="line-badge badge-isl">荃灣綫 TWL</span></div>
-                        <div id="mtr-tak-isl-data"></div>
                     </div>
                 </div>
             </div>
@@ -332,7 +328,7 @@
     </div>
 
     <script>
-        let transportTimestamps = { mtr_qub_isl: [], mtr_qub_tkl: [], mtr_tak_isl: [], bus: [] };
+        let transportTimestamps = { mtr_qub_isl: [], mtr_qub_tkl: [], bus: [] };
         let hkHolidaysMap = {}; 
         
         const ALLOWED_ROUTES = ['1', '1A', '2', '6'];
@@ -418,7 +414,7 @@
         }
 
         function renderUI() {
-            ['mtr_qub_isl', 'mtr_qub_tkl', 'mtr_tak_isl'].forEach(id => {
+            ['mtr_qub_isl', 'mtr_qub_tkl'].forEach(id => {
                 let html = '';
                 transportTimestamps[id].forEach(t => {
                     const etaInfo = parseRemaining(t.time);
@@ -617,14 +613,12 @@
 
         async function fetchMTR() {
             try {
-                const [resTwlM, resKtlM, resTwlY] = await Promise.all([
+                const [resTwl, resKtl] = await Promise.all([
                     fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TWL&sta=MOK`).then(r=>r.json()),
-                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=KTL&sta=MOK`).then(r=>r.json()),
-                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=TWL&sta=YMT`).then(r=>r.json())
+                    fetch(`https://rt.data.gov.hk/v1/transport/mtr/getSchedule.php?line=KTL&sta=MOK`).then(r=>r.json())
                 ]);
-                transportTimestamps.mtr_qub_isl = setupMtrData(resTwlM, 'TWL-MOK', { up: '荃灣', down: '中環' });
-                transportTimestamps.mtr_qub_tkl = setupMtrData(resKtlM, 'KTL-MOK', { up: '調景嶺', down: '黃埔' });
-                transportTimestamps.mtr_tak_isl = setupMtrData(resTwlY, 'TWL-YMT', { up: '荃灣', down: '中環' });
+                transportTimestamps.mtr_qub_isl = setupMtrData(resTwl, 'TWL-MOK', { up: '荃灣', down: '中環' });
+                transportTimestamps.mtr_qub_tkl = setupMtrData(resKtl, 'KTL-MOK', { up: '調景嶺', down: '黃埔' });
             } catch (e) {}
         }
 
