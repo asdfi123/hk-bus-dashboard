@@ -145,9 +145,10 @@ async function fetchBus(){
     let h='';
     Object.entries(groups).forEach(([no,g])=>{
       const etas=g.etas.map(e=>{
-        const diff=Math.floor((new Date(e)-new Date())/1000);
-        return diff<=0?'開出':diff<=60?'即將':`${Math.floor(diff/60)}'${(diff%60).toString().padStart(2,'0')}\"`;
-      }).join(' · ');
+              const diff=Math.floor((new Date(e)-new Date())/1000);
+              const m=Math.floor(diff/60),s=diff%60;
+              return diff<=0?'開出':diff<=60?'即將':`${m}分${s.toString().padStart(2,'0')}秒`;
+            }).join(' · ');
       h+=`<div class="bus-card"><div class="no">${no}</div><div class="info"><div class="dest">${g.dest}</div><div class="etas">${etas}</div></div></div>`;
     });
     document.getElementById('bus-area').innerHTML=h||'<div class="no-data">暫無班次</div>';
